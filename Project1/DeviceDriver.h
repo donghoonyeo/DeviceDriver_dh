@@ -11,4 +11,5 @@ public:
 
 protected:
     FlashMemoryDevice* m_hardware;
+    bool isReadOk(int address, int firstReadVal);
 };
