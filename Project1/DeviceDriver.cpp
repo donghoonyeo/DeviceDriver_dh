@@ -4,8 +4,6 @@
 #include <iostream>
 #include <vector>
 
-using namespace std;
-
 class ReadFailException : public std::exception
 {
 public:
@@ -48,6 +46,29 @@ int DeviceDriver::read(long address)
 
 void DeviceDriver::write(long address, int data)
 {
-    // TODO: implement this method
+    int destData = (int)m_hardware->read(address);
+    if (destData != 0xff)
+        throw WriteFailException();
+
     m_hardware->write(address, (int)data);
+    
 }
+
+class Application {
+public:
+    Application(DeviceDriver* dd) : dd{ dd } {}
+
+    void readAndPrint(long startAddr, long endAddr) {
+        for (long addr = startAddr; addr <= endAddr; addr++) {
+            dd->read(addr);
+        }
+    }
+
+    void writeAll(unsigned char value) {
+        for (long addr = 0x00; addr <= 0x04; addr++) {
+            dd->write(addr, value);
+        }
+    }
+private:
+    DeviceDriver* dd;
+};
